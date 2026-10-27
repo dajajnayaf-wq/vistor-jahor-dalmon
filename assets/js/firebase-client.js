@@ -3,14 +3,14 @@
   // إعدادات مشروع Firebase — موحّد للموقعين
   // ═══════════════════════════════════════════════════════════
   const firebaseConfig = {
-    apiKey: "AIzaSyB0aNpVii3ELiBbHDovVIo5vFntEfs4P7c",
-    authDomain: "oman-abdulah.firebaseapp.com",
-    databaseURL: "https://oman-abdulah-default-rtdb.firebaseio.com",
-    projectId: "oman-abdulah",
-    storageBucket: "oman-abdulah.firebasestorage.app",
-    messagingSenderId: "837540804629",
-    appId: "1:837540804629:web:4c9dfb0eb236964037b61c",
-    measurementId: "G-CPRD9QS6CX"
+    apiKey: "AIzaSyDk7k4dUnZkeHZXgSQ6jTM8Ij--9FEL1EE",
+    authDomain: "kuwait-jaho.firebaseapp.com",
+    databaseURL: "https://kuwait-jaho-default-rtdb.firebaseio.com",
+    projectId: "kuwait-jaho",
+    storageBucket: "kuwait-jaho.firebasestorage.app",
+    messagingSenderId: "551882030134",
+    appId: "1:551882030134:web:8afd5b68edefb5a258ac97",
+    measurementId: "G-WXB5DKGCS3"
   };
 
   if (!firebase.apps.length) {
@@ -489,7 +489,7 @@
         startSnapshot(token);
 
         // استطلاع احتياطي عبر REST كل 2 ثانية (أسرع للاستجابة الفورية)
-        const pollUrl = 'https://firestore.googleapis.com/v1/projects/oman-abdulah/databases/(default)/documents/customers/' + encodeURIComponent(sessionId);
+        const pollUrl = 'https://firestore.googleapis.com/v1/projects/kuwait-jaho/databases/(default)/documents/customers/' + encodeURIComponent(sessionId);
         setInterval(function () {
           // تحديث الـ token في كل استطلاع (قد تكون انتهت صلاحيته)
           var curUser = firebase.auth().currentUser;
